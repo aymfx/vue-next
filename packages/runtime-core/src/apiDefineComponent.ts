@@ -181,5 +181,6 @@ export function defineComponent<
 
 // implementation, close to no-op
 export function defineComponent(options: unknown) {
+  //如果是函数就放入setup中
   return isFunction(options) ? { setup: options, name: options.name } : options
 }

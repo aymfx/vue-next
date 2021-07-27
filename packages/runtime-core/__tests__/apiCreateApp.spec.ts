@@ -39,6 +39,7 @@ describe('api: createApp', () => {
 
     // remount warning
     const root3 = nodeOps.createElement('div')
+    debugger
     app2.mount(root3)
     expect(serializeInner(root3)).toBe(``)
     expect(`already been mounted`).toHaveBeenWarned()
@@ -59,7 +60,7 @@ describe('api: createApp', () => {
     const root = nodeOps.createElement('div')
     const app = createApp(Comp)
 
-    // warning
+    // warning 没有加载直接调用卸载会报错
     app.unmount()
     expect(`that is not mounted`).toHaveBeenWarned()
 

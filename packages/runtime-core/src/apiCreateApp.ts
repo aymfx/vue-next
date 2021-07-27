@@ -180,7 +180,7 @@ export function createAppAPI<HostElement>(
     const context = createAppContext()
     const installedPlugins = new Set()
 
-    let isMounted = false
+    let isMounted = false //私有变量  只允许一个实例加载一次
 
     const app: App = (context.app = {
       _uid: uid++,
@@ -316,7 +316,7 @@ export function createAppAPI<HostElement>(
 
       unmount() {
         if (isMounted) {
-          render(null, app._container)
+          render(null, app._container) //直接值为空 vnode
           if (__DEV__ || __FEATURE_PROD_DEVTOOLS__) {
             app._instance = null
             devtoolsUnmountApp(app)

@@ -84,6 +84,7 @@ function createConfig(format, output, plugins = []) {
   output.exports = 'auto'
   output.sourcemap = !!process.env.SOURCE_MAP
   output.externalLiveBindings = false
+  output.sourcemap = true
 
   const isProductionBuild =
     process.env.__DEV__ === 'false' || /\.prod\.js$/.test(output.file)

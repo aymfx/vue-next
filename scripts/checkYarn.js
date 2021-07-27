@@ -1,3 +1,4 @@
+console.log(process.env.npm_execpath) //npm_execpath
 if (!/yarn\.js$/.test(process.env.npm_execpath || '')) {
   console.warn(
     '\u001b[33mThis repository requires Yarn 1.x for scripts to work properly.\u001b[39m\n'
