@@ -58,7 +58,6 @@ export const hydrate = ((...args) => {
 
 export const createApp = ((...args) => {
   const app = ensureRenderer().createApp(...args)
-  debugger
   if (__DEV__) {
     injectNativeTagCheck(app)
     injectCompilerOptionsCheck(app)

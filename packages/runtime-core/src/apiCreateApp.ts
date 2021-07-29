@@ -206,10 +206,11 @@ export function createAppAPI<HostElement>(
 
       use(plugin: Plugin, ...options: any[]) {
         if (installedPlugins.has(plugin)) {
+          //如果存在
           __DEV__ && warn(`Plugin has already been applied to target app.`)
         } else if (plugin && isFunction(plugin.install)) {
-          installedPlugins.add(plugin)
-          plugin.install(app, ...options)
+          installedPlugins.add(plugin) //放到数组里面
+          plugin.install(app, ...options) //参数也放进去
         } else if (isFunction(plugin)) {
           installedPlugins.add(plugin)
           plugin(app, ...options)
@@ -224,6 +225,7 @@ export function createAppAPI<HostElement>(
 
       mixin(mixin: ComponentOptions) {
         if (__FEATURE_OPTIONS_API__) {
+          //mixins 不能存在相同的引用
           if (!context.mixins.includes(mixin)) {
             context.mixins.push(mixin)
           } else if (__DEV__) {
@@ -329,6 +331,7 @@ export function createAppAPI<HostElement>(
 
       provide(key, value) {
         if (__DEV__ && (key as string | symbol) in context.provides) {
+          //实例中不能重复添加相同的元素
           warn(
             `App already provides property with key "${String(key)}". ` +
               `It will be overwritten with the new value.`

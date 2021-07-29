@@ -71,6 +71,7 @@ describe('api: createApp', () => {
   })
 
   test('provide', () => {
+    // 子实例的provide可以将父实例覆盖掉，相同实例不能重新定义provide的字段
     const Root = {
       setup() {
         // test override
@@ -106,12 +107,14 @@ describe('api: createApp', () => {
   })
 
   test('component', () => {
+    // 组件不能重复被定义 组件是就近原则取
     const Root = {
       // local override
       components: {
         BarBaz: () => 'barbaz-local!'
       },
       setup() {
+        //resolveComponent 只能在 render 或 setup 函数中使用。
         // resolve in setup
         const FooBar = resolveComponent('foo-bar') as any
         return () => {
@@ -141,6 +144,7 @@ describe('api: createApp', () => {
   })
 
   test('directive', () => {
+    //自定义指令 不能重复定义 通过resolveDirective withDirectives 可以在render使用指定义指令，本地可以覆盖全局组件
     const spy1 = jest.fn()
     const spy2 = jest.fn()
     const spy3 = jest.fn()
@@ -151,6 +155,7 @@ describe('api: createApp', () => {
         BarBaz: { mounted: spy3 }
       },
       setup() {
+        //resolveDirective 只能在 render 或 setup 函数中使用。
         // resolve in setup
         const FooBar = resolveDirective('foo-bar')!
         return () => {
@@ -191,6 +196,7 @@ describe('api: createApp', () => {
   })
 
   test('mixin', () => {
+    //混入 默认是可以混入多个对象
     const calls: string[] = []
     const mixinA = {
       data() {
@@ -273,6 +279,7 @@ describe('api: createApp', () => {
   })
 
   test('use', () => {
+    // 插件可以是 函数 对象 和 class 后者必须抱哈install
     const PluginA: Plugin = app => app.provide('foo', 1)
     const PluginB: Plugin = {
       install: (app, arg1, arg2) => app.provide('bar', arg1 + arg2)
@@ -295,19 +302,19 @@ describe('api: createApp', () => {
 
     const app = createApp(Root)
     app.use(PluginA)
-    app.use(PluginB, 1, 1)
+    app.use(PluginB, 1, 1) //可以传参数
     app.use(PluginC)
 
     const root = nodeOps.createElement('div')
     app.mount(root)
     expect(serializeInner(root)).toBe(`1,2`)
 
-    app.use(PluginA)
+    app.use(PluginA) //不能重复注册
     expect(
       `Plugin has already been applied to target app`
     ).toHaveBeenWarnedTimes(1)
 
-    app.use(PluginD)
+    app.use(PluginD) //必须包含函数 或者对象中包含 install
     expect(
       `A plugin must either be a function or an object with an "install" ` +
         `function.`
@@ -315,6 +322,7 @@ describe('api: createApp', () => {
   })
 
   test('config.errorHandler', () => {
+    //捕获一个全局的错误
     const error = new Error()
     const count = ref(0)
 
@@ -343,6 +351,7 @@ describe('api: createApp', () => {
   })
 
   test('config.warnHandler', () => {
+    //全局的一个警告操作⚠️
     let ctx: any
     const handler = jest.fn((msg, instance, trace) => {
       expect(msg).toMatch(`Component is missing template or render function`)
@@ -432,6 +441,7 @@ describe('api: createApp', () => {
     })
 
     test('register using app.component', () => {
+      //组件不能是标签元素
       const app = createApp({
         render() {}
       })
@@ -450,6 +460,7 @@ describe('api: createApp', () => {
   })
 
   test('config.optionMergeStrategies', () => {
+    //在合并策略面前 首先合并比较 global  extends mixin  local
     let merged: string
     const App = defineComponent({
       render() {},
@@ -465,13 +476,20 @@ describe('api: createApp', () => {
     app.mixin({
       foo: 'global'
     })
-    app.config.optionMergeStrategies.foo = (a, b) => (a ? `${a},` : ``) + b
+    app.config.optionMergeStrategies.foo = (a, b) => {
+      console.log(a, b)
+      return (a ? `${a},` : ``) + b
+    }
 
     app.mount(nodeOps.createElement('div'))
     expect(merged!).toBe('global,extends,mixin,local')
   })
 
   test('config.globalProperties', () => {
+    //第一种 父子传递信息 props
+    //第二种 eventBus
+    // 第三种 provide
+    // 这是第四种 全局
     const app = createApp({
       render() {
         return this.foo
