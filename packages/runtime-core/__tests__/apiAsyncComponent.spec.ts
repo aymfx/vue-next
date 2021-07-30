@@ -12,6 +12,7 @@ const timeout = (n: number = 0) => new Promise(r => setTimeout(r, n))
 
 describe('api: defineAsyncComponent', () => {
   test('simple usage', async () => {
+    //异步组件 可以通过 resolve 完成触发
     let resolve: (comp: Component) => void
     const Foo = defineAsyncComponent(
       () =>
@@ -25,7 +26,7 @@ describe('api: defineAsyncComponent', () => {
     createApp({
       render: () => (toggle.value ? h(Foo) : null)
     }).mount(root)
-
+    console.log(serializeInner(root))
     expect(serializeInner(root)).toBe('<!---->')
 
     resolve!(() => 'resolved')
@@ -45,6 +46,7 @@ describe('api: defineAsyncComponent', () => {
   })
 
   test('with loading component', async () => {
+    //设置loadinng loadingComponent 设置在加载是显示的默认组件 delay表示什么时间显示默认组价 默认200
     let resolve: (comp: Component) => void
     const Foo = defineAsyncComponent({
       loader: () =>
@@ -75,7 +77,7 @@ describe('api: defineAsyncComponent', () => {
     toggle.value = false
     await nextTick()
     expect(serializeInner(root)).toBe('<!---->')
-
+    //异步加载完了 不会因为被删除而重新加载
     // already resolved component should update on nextTick without loading
     // state
     toggle.value = true
@@ -84,6 +86,7 @@ describe('api: defineAsyncComponent', () => {
   })
 
   test('with loading component + explicit delay (0)', async () => {
+    // 默认loading组件会立即显示出来
     let resolve: (comp: Component) => void
     const Foo = defineAsyncComponent({
       loader: () =>
@@ -119,6 +122,7 @@ describe('api: defineAsyncComponent', () => {
   })
 
   test('error without error component', async () => {
+    //检测组件异步组件reject  捕获状态
     let resolve: (comp: Component) => void
     let reject: (e: Error) => void
     const Foo = defineAsyncComponent(
@@ -163,6 +167,7 @@ describe('api: defineAsyncComponent', () => {
   })
 
   test('error with error component', async () => {
+    // 可以通过errorComponent去捕获一个错误
     let resolve: (comp: Component) => void
     let reject: (e: Error) => void
     const Foo = defineAsyncComponent({
@@ -208,6 +213,7 @@ describe('api: defineAsyncComponent', () => {
 
   // #2129
   test('error with error component, without global handler', async () => {
+    //来回切换 根据reslove 和reject 进行判断 显示什么结果
     let resolve: (comp: Component) => void
     let reject: (e: Error) => void
     const Foo = defineAsyncComponent({
