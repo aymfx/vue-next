@@ -258,6 +258,7 @@ describe('api: defineAsyncComponent', () => {
   })
 
   test('error with error + loading components', async () => {
+    //对于默认的加载组价 碰到reject也需要抛出错误
     let resolve: (comp: Component) => void
     let reject: (e: Error) => void
     const Foo = defineAsyncComponent({
@@ -314,6 +315,7 @@ describe('api: defineAsyncComponent', () => {
   })
 
   test('timeout without error component', async () => {
+    //测试超时时错误没设置超时组件
     let resolve: (comp: Component) => void
     const Foo = defineAsyncComponent({
       loader: () =>
@@ -347,6 +349,7 @@ describe('api: defineAsyncComponent', () => {
   })
 
   test('timeout with error component', async () => {
+    //设置了错误组件 不报错 显示错误组件
     let resolve: (comp: Component) => void
     const Foo = defineAsyncComponent({
       loader: () =>
@@ -378,6 +381,7 @@ describe('api: defineAsyncComponent', () => {
   })
 
   test('timeout with error + loading components', async () => {
+    // 超时后 加载组件隐藏 显示错误组件
     let resolve: (comp: Component) => void
     const Foo = defineAsyncComponent({
       loader: () =>
@@ -410,6 +414,7 @@ describe('api: defineAsyncComponent', () => {
   })
 
   test('timeout without error component, but with loading component', async () => {
+    //在超时后，没有错误组件 直接报错 加载组件隐藏
     let resolve: (comp: Component) => void
     const Foo = defineAsyncComponent({
       loader: () =>
@@ -445,6 +450,7 @@ describe('api: defineAsyncComponent', () => {
   })
 
   test('with suspense', async () => {
+    //异步加载组件，异步的控制权 交给父组件 在这种情况下，加载状态将由 <Suspense> 控制，组件自身的加载、错误、延迟和超时选项都将被忽略。
     let resolve: (comp: Component) => void
     const Foo = defineAsyncComponent(
       () =>
@@ -471,6 +477,7 @@ describe('api: defineAsyncComponent', () => {
   })
 
   test('suspensible: false', async () => {
+    //suspensible: false 异步组件可以选择退出 Suspense 控制，并可以在其选项中指定 suspensible:false，让组件始终控制自己的加载状态。
     let resolve: (comp: Component) => void
     const Foo = defineAsyncComponent({
       loader: () =>
@@ -499,6 +506,7 @@ describe('api: defineAsyncComponent', () => {
   })
 
   test('suspense with error handling', async () => {
+    //抛出异常 将不加载
     let reject: (e: Error) => void
     const Foo = defineAsyncComponent(
       () =>
@@ -527,6 +535,7 @@ describe('api: defineAsyncComponent', () => {
   })
 
   test('retry (success)', async () => {
+    //retry 一个函数，用于指示当 promise 加载器 reject 时，加载器是否应该重试 ,fail  一个函数，指示加载程序结束退出
     let loaderCallCount = 0
     let resolve: (comp: Component) => void
     let reject: (e: Error) => void
@@ -573,6 +582,7 @@ describe('api: defineAsyncComponent', () => {
   })
 
   test('retry (skipped)', async () => {
+    //走fail时
     let loaderCallCount = 0
     let reject: (e: Error) => void
 
@@ -613,6 +623,7 @@ describe('api: defineAsyncComponent', () => {
   })
 
   test('retry (fail w/ max retry attempts)', async () => {
+    //attempts 允许的最大重试次数
     let loaderCallCount = 0
     let reject: (e: Error) => void
 
@@ -650,7 +661,7 @@ describe('api: defineAsyncComponent', () => {
     expect(loaderCallCount).toBe(2)
     expect(serializeInner(root)).toBe('<!---->')
 
-    // 2nd retry, should fail due to reaching maxRetries
+    // 2nd retry, should fail due to reaching maxRetries 超过一次后开始报错
     reject!(err)
     await timeout()
     expect(handler).toHaveBeenCalled()

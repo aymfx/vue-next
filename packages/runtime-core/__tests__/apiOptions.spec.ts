@@ -14,6 +14,7 @@ import {
 
 describe('api: options', () => {
   test('data', async () => {
+    // data 属性
     const Comp = defineComponent({
       data() {
         return {
@@ -76,6 +77,7 @@ describe('api: options', () => {
   })
 
   test('methods', async () => {
+    // 方法 新增
     const Comp = defineComponent({
       data() {
         // #3300 method on ctx should be overwritable
@@ -117,6 +119,7 @@ describe('api: options', () => {
   })
 
   test('component’s own methods have higher priority than global properties', async () => {
+    // 组件自己的属性高于全局属性
     const app = createApp({
       methods: {
         foo() {
@@ -169,7 +172,7 @@ describe('api: options', () => {
           deep: true
         },
         qux: {
-          handler: 'onQuxChange'
+          handler: 'onQuxChange' //字符串函数
         },
         'dot.path': spyE
       },
@@ -217,6 +220,7 @@ describe('api: options', () => {
   })
 
   test('watch array', async () => {
+    // 可以添加数组对象
     function returnThis(this: any) {
       return this
     }
@@ -281,6 +285,7 @@ describe('api: options', () => {
 
   // #3966
   test('watch merging from mixins', async () => {
+    // 合并写法
     const mixinA = {
       data() {
         return {
@@ -341,6 +346,7 @@ describe('api: options', () => {
   })
 
   test('provide/inject', () => {
+    // provide/inject 的各种花招
     const symbolKey = Symbol()
     const Root = defineComponent({
       data() {
@@ -427,6 +433,7 @@ describe('api: options', () => {
   })
 
   test('provide accessing data in extends', () => {
+    // 可扩展data的数据向下传递 通过extends传递
     const Base = defineComponent({
       data() {
         return {
@@ -695,6 +702,7 @@ describe('api: options', () => {
   })
 
   test('render from mixin', () => {
+    // render 也可以被mix
     const Comp = {
       mixins: [
         {
@@ -830,6 +838,7 @@ describe('api: options', () => {
   })
 
   test('extends with mixins', () => {
+    // extends> minis > comp
     const calls: string[] = []
     const Base = {
       data() {
@@ -948,6 +957,7 @@ describe('api: options', () => {
   })
 
   test('flatten merged options', async () => {
+    // 拍平
     const MixinBase = {
       msg1: 'base'
     }
@@ -972,6 +982,7 @@ describe('api: options', () => {
   })
 
   test('options defined in component have higher priority', async () => {
+    // 属性都是就近原则
     const Mixin = {
       msg1: 'base'
     }
@@ -1044,6 +1055,7 @@ describe('api: options', () => {
     }
 
     const watchSpy = jest.fn()
+    // watcher 需要被延迟执行
     const mixin2 = {
       watch: {
         mixin3Data: watchSpy
@@ -1078,6 +1090,7 @@ describe('api: options', () => {
   })
 
   test('injection from closest ancestor', () => {
+    // 继承自己最近的祖先
     const Root = defineComponent({
       provide: {
         a: 'root'
@@ -1346,6 +1359,7 @@ describe('api: options', () => {
     })
 
     test('computed with setter and no getter', () => {
+      // 需要getter 和 setter
       const Comp = {
         computed: {
           foo: {
@@ -1361,6 +1375,7 @@ describe('api: options', () => {
     })
 
     test('assigning to computed with no setter', () => {
+      // 仅设置setter将不变成可读的
       let instance: any
       const Comp = {
         computed: {
@@ -1383,6 +1398,7 @@ describe('api: options', () => {
     })
 
     test('inject property is already declared in props', () => {
+      // props名称不能和传下来的属性一致
       const Comp = {
         data() {
           return {
@@ -1414,6 +1430,7 @@ describe('api: options', () => {
     })
 
     test('methods property is not a function', () => {
+      //
       const Comp = {
         methods: {
           foo: 1
@@ -1430,6 +1447,7 @@ describe('api: options', () => {
     })
 
     test('methods property is already declared in props', () => {
+      //属性名不能和方法名一致
       const Comp = {
         props: {
           foo: Number

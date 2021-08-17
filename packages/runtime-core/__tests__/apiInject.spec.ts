@@ -14,6 +14,7 @@ import { render, nodeOps, serialize } from '@vue/runtime-test'
 
 // reference: https://vue-composition-api-rfc.netlify.com/api.html#provide-inject
 describe('api: provide/inject', () => {
+  //像孙子元素传递信息
   it('string keys', () => {
     const Provider = {
       setup() {
@@ -40,6 +41,7 @@ describe('api: provide/inject', () => {
 
   it('symbol keys', () => {
     // also verifies InjectionKey type sync
+    // symbol也可以进行传递
     const key: InjectionKey<number> = Symbol()
 
     const Provider = {
@@ -66,6 +68,7 @@ describe('api: provide/inject', () => {
   })
 
   it('default values', () => {
+    //  inject 的第二个参数可以设置默认值
     const Provider = {
       setup() {
         provide('foo', 'foo')
@@ -93,6 +96,7 @@ describe('api: provide/inject', () => {
   })
 
   it('bound to instance', () => {
+    // inject 也可以是一个对象的形式 {from:xx,default(){return xxx}}
     const Provider = {
       setup() {
         return () => h(Consumer)
@@ -121,6 +125,7 @@ describe('api: provide/inject', () => {
   })
 
   it('nested providers', () => {
+    // 就近原则 最近的可以覆盖上面的一切
     const ProviderOne = {
       setup() {
         provide('foo', 'foo')
@@ -153,6 +158,7 @@ describe('api: provide/inject', () => {
   })
 
   it('reactivity with refs', async () => {
+    // 可以传递父级参数 响应性的参数
     const count = ref(1)
 
     const Provider = {
@@ -183,6 +189,7 @@ describe('api: provide/inject', () => {
   })
 
   it('reactivity with readonly refs', async () => {
+    // 对于被冻结的元素，子组件不能改变
     const count = ref(1)
 
     const Provider = {
@@ -220,6 +227,7 @@ describe('api: provide/inject', () => {
   })
 
   it('reactivity with objects', async () => {
+    // 响应对象也可以传递
     const rootState = reactive({ count: 1 })
 
     const Provider = {
@@ -250,6 +258,7 @@ describe('api: provide/inject', () => {
   })
 
   it('reactivity with readonly objects', async () => {
+    // 只读对象不能改变里面的值
     const rootState = reactive({ count: 1 })
 
     const Provider = {
@@ -286,6 +295,7 @@ describe('api: provide/inject', () => {
   })
 
   it('should warn unfound', () => {
+    //父级没传递provider 孙子节点使用时 也没有默认值  将会报警告
     const Provider = {
       setup() {
         return () => h(Middle)
@@ -311,6 +321,7 @@ describe('api: provide/inject', () => {
   })
 
   it('should not warn when default value is undefined', () => {
+    //如果默认值是undefined 依旧包warn
     const Provider = {
       setup() {
         return () => h(Middle)
@@ -335,6 +346,7 @@ describe('api: provide/inject', () => {
 
   // #2400
   it('should not self-inject', () => {
+    //为null 不会报错
     const Comp = {
       setup() {
         provide('foo', 'foo')

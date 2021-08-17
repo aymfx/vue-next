@@ -22,6 +22,7 @@ import { ITERATE_KEY, DebuggerEvent, TriggerOpTypes } from '@vue/reactivity'
 
 describe('api: lifecycle hooks', () => {
   it('onBeforeMount', () => {
+    // 钩子函数  onBeforeMount dom加载钱的操作
     const root = nodeOps.createElement('div')
     const fn = jest.fn(() => {
       // should be called before inner div is rendered
@@ -78,6 +79,7 @@ describe('api: lifecycle hooks', () => {
   })
 
   it('state mutation in onBeforeUpdate', async () => {
+    // 状态变化也会触发更新
     const count = ref(0)
     const root = nodeOps.createElement('div')
     const fn = jest.fn(() => {
@@ -214,6 +216,7 @@ describe('api: lifecycle hooks', () => {
   })
 
   it('lifecycle call order', async () => {
+    // before 从父组件到孙子组件
     const count = ref(0)
     const root = nodeOps.createElement('div')
     const calls: string[] = []
@@ -294,6 +297,7 @@ describe('api: lifecycle hooks', () => {
   })
 
   it('onRenderTracked', () => {
+    //跟踪虚拟 DOM 重新渲染时调用。钩子接收 debugger event 作为参数。此事件告诉你哪个操作跟踪了组件以及该操作的目标对象和键。
     const events: DebuggerEvent[] = []
     const onTrack = jest.fn((e: DebuggerEvent) => {
       events.push(e)
@@ -330,6 +334,7 @@ describe('api: lifecycle hooks', () => {
   })
 
   it('onRenderTriggered', async () => {
+    //当虚拟 DOM 重新渲染被触发时调用。和 renderTracked 类似，接收 debugger event 作为参数。此事件告诉你是什么操作触发了重新渲染，以及该操作的目标对象和键。
     const events: DebuggerEvent[] = []
     const onTrigger = jest.fn((e: DebuggerEvent) => {
       events.push(e)

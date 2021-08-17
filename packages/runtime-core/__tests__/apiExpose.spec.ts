@@ -3,6 +3,7 @@ import { defineComponent, h, ref } from '../src'
 
 describe('api: expose', () => {
   test('via setup context', () => {
+    //表示对外暴露属性值，添加了之后 将不会暴露data的属性
     const Child = defineComponent({
       render() {},
       setup(_, { expose }) {
@@ -32,6 +33,7 @@ describe('api: expose', () => {
   })
 
   test('via options', () => {
+    //也可以直接暴露可选项的几个属性值
     const Child = defineComponent({
       render() {},
       data() {
@@ -63,6 +65,7 @@ describe('api: expose', () => {
   })
 
   test('options + context', () => {
+    //两者一起用 将会把他们并在一块
     const Child = defineComponent({
       render() {},
       expose: ['foo'],
@@ -97,6 +100,7 @@ describe('api: expose', () => {
   })
 
   test('options: empty', () => {
+    // expose: [] 不能访问任何子元素的属性
     const Child = defineComponent({
       render() {},
       expose: [],
@@ -120,6 +124,7 @@ describe('api: expose', () => {
   })
 
   test('options: empty + setup context', () => {
+    // 合并操作
     const Child = defineComponent({
       render() {},
       expose: [],
@@ -143,6 +148,7 @@ describe('api: expose', () => {
   })
 
   test('with $parent/$root', () => {
+    //父级和自己都不能放
     const Child = defineComponent({
       render() {
         expect((this.$parent! as any).foo).toBe(1)
@@ -171,6 +177,7 @@ describe('api: expose', () => {
   })
 
   test('expose should allow access to built-in instance properties', () => {
+    //判断暴露的实例是不是相等
     const GrandChild = defineComponent({
       render() {
         return h('div')
